@@ -22,10 +22,44 @@ public class StreamDemo {
             System.out.println("Reading message from file...");
             String result = readTextFromFile(filePath);
             System.out.println("Content read:\n"+ result);
+
+            // Copying the file
+            System.out.println("Copying the file using byte stream...");
+            copyFileUsingBytes(filePath, copyPath);
+            System.out.println("File copied successfully to: "+copyPath);
+
         } catch (IOException e) {
-            throw new RuntimeException(e);
+           System.err.println("An error occurred: "+ e.getMessage());
         }
 
+    }
+
+    /**
+     * Copies a file using byte stream (suitable for binary files).
+     * @param sourcePath Path to the original file you want to copy.
+     * @param destPath Path whee you want to create the copied file.
+     *
+     * @throws IOException indicates that file-related errors will be thrown to the caller.
+     * */
+    public static void copyFileUsingBytes(String sourcePath, String destPath)  throws IOException {
+        // Why Byte Stream:
+        // because we don't want to interpret data as characters.
+        // much faster.
+        // The Byte Stream processes raw data as bytes, unlike character streams which decode to text.
+        try(
+                InputStream in = new BufferedInputStream(new FileInputStream(sourcePath));
+                OutputStream out = new BufferedOutputStream(new FileOutputStream(destPath))
+        ){
+            // Core logic :
+             // int size = 1024 * 1024;
+            byte[] buffer = new byte[1024]; // 1KB buffer
+            int length;
+            while ((length = in.read(buffer)) > 0){
+                // length = in.read(buffer) -> 350 at the end of the source file.
+                // ['A', 'B', ...,'v', null, ....,null]
+                out.write(buffer, 0,length); // only 350 bytes will be written
+            }
+        }
     }
 
     /**
