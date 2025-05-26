@@ -17,6 +17,11 @@ public class StreamDemo {
             // Writing to a file
             System.out.println("Writing message to file...");
             writeTextToFile(filePath, message);
+
+            // Reading from a file
+            System.out.println("Reading message from file...");
+            String result = readTextFromFile(filePath);
+            System.out.println("Content read:\n"+ result);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -24,7 +29,25 @@ public class StreamDemo {
     }
 
     /**
-     * Writes a string to a file
+     * Read text from a file using character stream.
+     * */
+    public static String readTextFromFile(String filePath) throws IOException{
+        StringBuilder content = new StringBuilder();
+        // FileReader: A Low-Level character stream reader for files.
+        // BufferedReader: Adds a buffer to read chunks of characters at once,
+        // better performance and enables methods like .readLine()
+        try(BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while((line = reader.readLine()) != null){
+                content.append(line).append(System.lineSeparator());
+                // using System.lineSeparator(): makes our code OS-agnostic.
+            }
+        }
+        return content.toString();
+    }
+
+    /**
+     * Writes a string to a file using character stream.
      * @param filePath the path of the file to write on.
      * @param content the String to be written
      * @throws IOException  e.g., if the file path is invalid.
